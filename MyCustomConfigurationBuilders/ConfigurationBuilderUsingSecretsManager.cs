@@ -51,13 +51,13 @@ namespace MyCustomConfigurationBuilders
 
         public override ICollection<KeyValuePair<string, string>> GetAllValues(string prefix)
         {
-            // Don't need to implement because we'll never get here
+            // Don't need to implement because we'll never get here (unless initialization is done in LazyInitialize)
             throw new NotImplementedException();
         }
 
         public override string GetValue(string key)
         {
-            // Don't need to implement because we'll never get here
+            // Don't need to implement because we'll never get here (unless initialization is done in LazyInitialize)
             throw new NotImplementedException();
         }
     }
