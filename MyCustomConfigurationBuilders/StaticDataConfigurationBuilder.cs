@@ -1,12 +1,18 @@
 ﻿using Microsoft.Configuration.ConfigurationBuilders;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MyCustomConfigurationBuilders
 {
     public class StaticDataConfigurationBuilder : KeyValueConfigBuilder
     {
+        public StaticDataConfigurationBuilder()
+        {
+            Debug.WriteLine("StaticDataConfigurationBuilder has been instantiated");
+        }
+
         public override ICollection<KeyValuePair<string, string>> GetAllValues(string prefix)
         {
             return GetAllSettings().Where(ev => ev.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
