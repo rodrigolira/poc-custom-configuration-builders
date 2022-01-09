@@ -1,0 +1,169 @@
+# poc-custom-configuration-builders
+
+Project created for testing custom [Configuration Builders](https://docs.microsoft.com/en-us/aspnet/config-builder) for .Net Framework 4.7.X.
+
+The use case is to migrate settings and secrets in a huge legacy codebase fully coded with .Net Framework's `ConfigurationManager` as a dependency. Using custom configuration builders would allow me to keep settings and secrets away from external files without the need to refactor a lot of code.
+
+It consists of three projects:
+
+## MyCustomConfigurationBuilders
+
+This is a class library where I created two custom configuration builders:
+
+* `StaticDataConfigurationBuilder` as the name suggests, injects configuration based on its static data. It does not access any external files or services.
+
+* `ConfigurationBuilderUsingSecretsManager` is a custom configuration builder that instantiates AWS Secrets Manager Client. It doesn't have any other logic so far.
+
+## SimpleCustomConfigurationBuilder
+
+This is a sample web project with its `AppSettings` configured to inject data from the `StaticDataConfigurationBuilder`.
+
+Upon running this application, you should see a json output with data coming from the custom configuration builder.
+
+## AttemptToUseConfigurationBuilderWithAwsSdk
+
+This other web project will try to inject settings from the `ConfigurationBuilderUsingSecretsManager`.
+
+When trying to run it, we get a StackOverflowException. I've added log to the debug output to let me know when the class was being instantiated and upon getting the Exception we can see the logged output below.
+
+Something in AWS Secrets Manager Client seems to trigger reinitialization of the class.
+
+Output of the Debug log below:
+
+```
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+ConfigurationBuilderUsingSecretsManager has been instantiated
+An unhandled exception of type 'System.StackOverflowException' occurred in mscorlib.dll
+```
+
